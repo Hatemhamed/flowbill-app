@@ -442,12 +442,20 @@ ${invoice.clientPhone ? `<p style="margin: 2px 0; font-size: 14px;">${invoice.cl
 // Open the tab immediately to avoid popup blocking
 const newTab = window.open("", "_blank");
 
-// Temporary message while generating
-newTab.document.write("<p style='font-family: sans-serif; padding: 20px;'>Generating PDF...</p>");
+// Write the invoice HTML into the new tab
+newTab.document.write(`
+  <html>
+    <head>
+      <title>Generating PDF...</title>
+    </head>
+    <body>${printArea.innerHTML}</body>
+  </html>
+`);
+newTab.document.close();
 
-// Generate PDF
+// Generate PDF from the new tab's DOM
 const pdfArray = await html2pdf()
-  .from(printArea)
+  .from(newTab.document.body)
   .set(options)
   .outputPdf('arraybuffer');
 
@@ -457,6 +465,7 @@ const pdfUrl = URL.createObjectURL(pdfBlob);
 
 // Redirect the new tab to the PDF
 newTab.location.href = pdfUrl;
+
 
     // ⭐ Hide wrapper again
     wrapper.style.display = "none";

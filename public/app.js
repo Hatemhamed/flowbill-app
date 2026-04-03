@@ -439,7 +439,29 @@ ${invoice.clientPhone ? `<p style="margin: 2px 0; font-size: 14px;">${invoice.cl
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     };
 
-const pdfArray = await html2pdf().from(printArea).set(options).outputPdf('arraybuffer');
+// Create a separate hidden window for PDF generation
+const pdfWindow = window.open("", "_blank", "width=1,height=1,left=-1000,top=-1000");
+
+// Write the HTML into the hidden window
+pdfWindow.document.write(`
+  <html>
+    <head>
+      <title>Generating PDF...</title>
+    </head>
+    <body>${printArea.innerHTML}</body>
+  </html>
+`);
+pdfWindow.document.close();
+
+// Generate PDF from the hidden window
+const pdfArray = await html2pdf()
+  .from(pdfWindow.document.body)
+  .set(options)
+  .outputPdf('arraybuffer');
+
+// Close the hidden window
+pdfWindow.close();
+
 const pdfBlob = new Blob([pdfArray], { type: "application/pdf" });
 const pdfUrl = URL.createObjectURL(pdfBlob);
 window.open(pdfUrl, "_blank");

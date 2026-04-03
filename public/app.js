@@ -439,33 +439,24 @@ ${invoice.clientPhone ? `<p style="margin: 2px 0; font-size: 14px;">${invoice.cl
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     };
 
-// Create a separate hidden window for PDF generation
-const pdfWindow = window.open("", "_blank", "width=1,height=1,left=-1000,top=-1000");
+// Open the tab immediately to avoid popup blocking
+const newTab = window.open("", "_blank");
 
-// Write the HTML into the hidden window
-pdfWindow.document.write(`
-  <html>
-    <head>
-      <title>Generating PDF...</title>
-    </head>
-    <body>${printArea.innerHTML}</body>
-  </html>
-`);
-pdfWindow.document.close();
+// Temporary message while generating
+newTab.document.write("<p style='font-family: sans-serif; padding: 20px;'>Generating PDF...</p>");
 
-// Generate PDF from the hidden window
+// Generate PDF
 const pdfArray = await html2pdf()
-  .from(pdfWindow.document.body)
+  .from(printArea)
   .set(options)
   .outputPdf('arraybuffer');
 
-// Close the hidden window
-pdfWindow.close();
-
+// Convert to Blob
 const pdfBlob = new Blob([pdfArray], { type: "application/pdf" });
 const pdfUrl = URL.createObjectURL(pdfBlob);
-window.open(pdfUrl, "_blank");
 
+// Redirect the new tab to the PDF
+newTab.location.href = pdfUrl;
 
     // ⭐ Hide wrapper again
     wrapper.style.display = "none";

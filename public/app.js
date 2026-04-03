@@ -470,7 +470,15 @@ const pdfUrl = URL.createObjectURL(pdfBlob);
 // Redirect the new tab to the PDF
 newTab.location.href = pdfUrl;
 
+// Hide the PDF overlay
 document.getElementById("pdfWrapper").style.display = "none";
+
+// Clear the invoice HTML so it doesn't cover the sidebar
+document.getElementById("printArea").innerHTML = "";
+
+// Hide the invoice modal (this is the one covering your sidebar)
+document.getElementById("invoiceModal").classList.add("hidden");
+
 
     // ⭐ Hide wrapper again
     wrapper.style.display = "none";

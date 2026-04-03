@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signup – SMM Invoice</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="auth-container">
+  <h1>SMM Invoice</h1>
+  <h2>Create Account</h2>
+
+  <input type="email" id="signupEmail" placeholder="Email" />
+  <input type="password" id="signupPassword" placeholder="Password" />
+
+  <button id="signupBtn" class="primary-btn">Create Account</button>
+
+  <p>Already have an account? <a href="login.html">Login</a></p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyAjsHZTkFBlvtpwBTn1ILmSmI4QJukfGPY",
+    authDomain: "smm-invoice-saas.firebaseapp.com",
+    projectId: "smm-invoice-saas",
+    storageBucket: "smm-invoice-saas.firebasestorage.app",
+    messagingSenderId: "329120211488",
+    appId: "1:329120211488:web:423299f33250f9ec2b1245"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  document.getElementById("signupBtn").addEventListener("click", () => {
+    const email = document.getElementById("signupEmail").value;
+    const pass = document.getElementById("signupPassword").value;
+
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(() => window.location.href = "index.html")
+      .catch(err => alert(err.message));
+  });
+</script>
+
+</body>
+</html>

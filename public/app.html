@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowBill Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <div id="app" class="hidden">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="user-info">
+        Logged in as: <span id="userEmail"></span>
+      </div>
+
+      <div class="sidebar-brand">
+        <span class="brand-title">FlowBill</span>
+      </div>
+
+      <ul>
+        <li class="nav-item active" data-page="dashboardPage">Dashboard</li>
+        <li class="nav-item" data-page="invoicePage">Create Invoice</li>
+        <li class="nav-item" data-page="invoicesPage">My Invoices</li>
+        <li class="nav-item" data-page="clientsPage">Clients</li>
+        <li class="nav-item" data-page="settingsPage">Settings</li>
+      </ul>
+
+      <div id="logoutBtn">Logout</div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+      <!-- ⭐ PAGE 0: DASHBOARD (DEFAULT) -->
+      <section id="dashboardPage" class="page active">
+        <h2>Dashboard</h2>
+
+        <div class="dashboard-cards">
+          <div class="card">
+            <h3>Total Invoices</h3>
+            <p id="kpiTotalInvoices">0</p>
+          </div>
+
+          <div class="card">
+            <h3>Unpaid Total</h3>
+            <p id="kpiUnpaidTotal">$0.00</p>
+          </div>
+
+          <div class="card">
+            <h3>Paid Total</h3>
+            <p id="kpiPaidTotal">$0.00</p>
+          </div>
+        </div>
+
+        <button id="goToCreateInvoice" class="primary-btn">
+          + Create New Invoice
+        </button>
+
+        <h3 style="margin-top: 30px;">Recent Invoices</h3>
+        <div id="recentInvoices"></div>
+      </section>
+
+      <!-- ⭐ PAGE 1: INVOICE GENERATOR -->
+      <section id="invoicePage" class="page">
+
+        <h2>Create Invoice</h2>
+
+        <!-- LOGO UPLOAD -->
+        <div class="form-group">
+          <label>Your Logo (optional)</label>
+          <input type="file" id="logoUpload" accept="image/*" />
+          <div id="logoPreviewContainer" style="margin-top: 10px;">
+            <img id="logoPreview" src="" style="max-height: 60px; display: none;" />
+          </div>
+        </div>
+
+        <!-- SAVED CLIENTS -->
+        <div class="client-tools">
+          <label><strong>Saved Clients</strong></label>
+          <select id="clientSelect">
+            <option value="">Select saved client</option>
+          </select>
+          <button id="saveClientBtn" class="save-client-btn">Save Client</button>
+        </div>
+
+        <!-- CLIENT INFO -->
+        <div class="form-group">
+          <label>Client Name</label>
+          <input type="text" id="clientName" placeholder="Client Name" />
+        </div>
+<div class="form-group">
+  <label>Company Name (optional)</label>
+  <input type="text" id="clientCompany" placeholder="e.g. Meta, Shopify, Freelance Client" />
+</div>
+
+        <div class="form-group">
+          <label>Client Email</label>
+          <input type="email" id="clientEmail" placeholder="Client Email" />
+        </div>
+
+  <div class="form-group">
+    <label>Client Address</label>
+    <input type="text" id="clientAddress" placeholder="e.g. 123 Main St, Montreal" />
+  </div>
+
+  <div class="form-group">
+    <label>Client Phone</label>
+    <input type="text" id="clientPhone" placeholder="e.g. +1 514 555 1234" />
+  </div>
+
+        <div class="form-group">
+          <label>Project Name</label>
+          <input type="text" id="projectName" placeholder="Project Name" />
+        </div>
+
+        <!-- SERVICES TABLE -->
+        <h3>Services</h3>
+
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Rate</th>
+              <th>Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody id="itemsBody">
+            <tr>
+              <td><input type="text" class="item-desc" placeholder="e.g. 5 TikTok videos" /></td>
+              <td><input type="number" class="item-qty" value="1" min="1" /></td>
+              <td><input type="number" class="item-rate" value="0" min="0" step="0.01" /></td>
+              <td class="item-amount">$0.00</td>
+              <td><button class="remove-item-btn">✕</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <button id="addItemBtn" class="add-item-btn">+ Add Item</button>
+
+        <!-- TOTALS -->
+        <div class="totals">
+          <div>Subtotal: <span id="subtotalDisplay">$0.00</span></div>
+          <div>
+            Tax Rate (%):
+            <input type="number" id="taxRate" value="0" min="0" step="0.1" />
+          </div>
+          <div>Tax: <span id="taxDisplay">$0.00</span></div>
+          <div><strong>Total: <span id="totalDisplay">$0.00</span></strong></div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <button id="saveInvoiceBtn" class="primary-btn">Save Invoice</button>
+        <button id="downloadPdfBtn" class="secondary-btn">Download PDF</button>
+
+      </section>
+
+      <!-- ⭐ PAGE 2: MY INVOICES -->
+      <section id="invoicesPage" class="page">
+        <h2>My Invoices</h2>
+<select id="invoiceSort" class="client-search-input" style="margin-bottom: 12px;">
+  <option value="newest">Sort: Newest First</option>
+  <option value="oldest">Sort: Oldest First</option>
+  <option value="paid">Sort: Paid First</option>
+  <option value="unpaid">Sort: Unpaid First</option>
+</select>
+
+        <div id="invoiceList"></div>
+      </section>
+
+      <!-- ⭐ PAGE 3: CLIENTS -->
+<section id="clientsPage" class="page">
+
+  <div class="clients-header">
+    <h2>Clients</h2>
+    <p class="clients-subtitle">Manage your client list. Saved clients appear automatically when creating invoices.</p>
+  </div>
+
+  <div class="client-card">
+    <h3>Add New Client</h3>
+
+    <div class="client-form">
+      <label>Client Name</label>
+      <input type="text" id="clientName_clients" placeholder="e.g. Sarah Johnson">
+
+      <label>Client Email</label>
+      <input type="email" id="clientEmail_clients" placeholder="e.g. sarah@example.com">
+
+      <label>Client Address</label>
+      <input type="text" id="clientAddress_clients" placeholder="e.g. 123 Main St, Montreal">
+
+      <label>Client Phone</label>
+      <input type="text" id="clientPhone_clients" placeholder="e.g. +1 514 555 1234">
+<label>Company Name (optional)</label>
+<input type="text" id="clientCompany_clients" placeholder="e.g. Meta, Shopify, Freelance Client">
+
+<label>Notes (internal only)</label>
+<textarea id="clientNotes_clients" placeholder="Internal notes about this client"></textarea>
+
+      <button id="saveClientBtn_clients" class="primary-btn">Save Client</button>
+    </div>
+  </div>
+
+<div class="client-list-card">
+  <h3>Saved Clients</h3>
+
+<select id="clientSort" class="client-search-input" style="margin-bottom: 12px;">
+  <option value="az">Sort: A → Z</option>
+  <option value="za">Sort: Z → A</option>
+</select>
+
+  <!-- ⭐ CLIENT SEARCH BAR -->
+  <input 
+    type="text" 
+    id="clientSearch" 
+    placeholder="Search clients by name, email, company, or notes..." 
+    class="client-search-input"
+  />
+
+  <div id="clientList" class="client-list"></div>
+</div>
+
+
+</section>
+
+      <!-- ⭐ PAGE 4: SETTINGS -->
+      <section id="settingsPage" class="page">
+        <h2>Settings</h2>
+        <p>Coming soon.</p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- PDF WRAPPER -->
+  <div id="pdfWrapper" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 99999; background: white; opacity: 1; pointer-events: none; display: none;">
+    <div id="printArea"></div>
+  </div>
+
+  <!-- INVOICE MODAL -->
+  <div id="invoiceModal" class="modal hidden">
+    <div class="modal-content">
+      <button id="closeModal" class="close-btn">✕</button>
+      <h2>Invoice Details</h2>
+      <div id="modalBody"></div>
+      <button id="modalPdfBtn" class="primary-btn">Download PDF</button>
+    </div>
+  </div>
+
+  <!-- FIREBASE SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <script src="firebase.js"></script>
+  <script src="js/html2pdf.bundle.min.js"></script>
+  <script src="app.js"></script>
+
+<!-- ⭐ GLOBAL LOADING OVERLAY -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="spinner"></div>
+</div>
+
+<!-- ⭐ GLOBAL TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<div id="editClientModal" class="modal hidden">
+  <div class="modal-content">
+    <button id="closeEditClientModal" class="close-btn">✕</button>
+    <h2>Edit Client</h2>
+
+    <div class="modal-body">
+      <label>Name</label>
+      <input type="text" id="editClientName">
+
+      <label>Email</label>
+      <input type="email" id="editClientEmail">
+
+      <label>Address</label>
+      <input type="text" id="editClientAddress">
+
+      <label>Phone</label>
+      <input type="text" id="editClientPhone">
+
+      <label>Company Name (optional)</label>
+      <input type="text" id="editClientCompany">
+
+      <label>Notes (internal only)</label>
+      <textarea id="editClientNotes"></textarea>
+
+      
+
+  <button id="updateClientBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="notesTooltip" class="notes-tooltip hidden"></div>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – SMM Invoice</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="auth-container">
+  <h1>SMM Invoice</h1>
+  <h2>Login</h2>
+
+  <input type="email" id="loginEmail" placeholder="Email" />
+  <input type="password" id="loginPassword" placeholder="Password" />
+
+  <button id="loginBtn" class="primary-btn">Login</button>
+
+  <p>Don’t have an account? <a href="signup.html">Create one</a></p>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<!-- Your Firebase config file -->
+<script src="firebase.js"></script>
+
+<!-- Login logic -->
+<script>
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    const email = document.getElementById("loginEmail").value;
+    const pass = document.getElementById("loginPassword").value;
+
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(() => {
+        console.log("Login successful");
+       window.location.href = "app.html";
+      })
+      .catch(err => {
+  console.error("Full error object:", err);
+  console.error("Error code:", err.code);
+  console.error("Error message:", err.message);
+  alert(err.message);
+      });
+  });
+</script>
+
+</body>
+</html>

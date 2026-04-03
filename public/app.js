@@ -442,18 +442,22 @@ ${invoice.clientPhone ? `<p style="margin: 2px 0; font-size: 14px;">${invoice.cl
 // Open the tab immediately to avoid popup blocking
 const newTab = window.open("", "_blank");
 
-// Write the invoice HTML into the new tab
+// Write a minimal HTML shell
 newTab.document.write(`
   <html>
     <head>
       <title>Generating PDF...</title>
     </head>
-    <body>${printArea.innerHTML}</body>
+    <body></body>
   </html>
 `);
 newTab.document.close();
 
-// Generate PDF from the new tab's DOM
+// Clone the invoice DOM instead of reading innerHTML
+const cloned = printArea.cloneNode(true);
+newTab.document.body.appendChild(cloned);
+
+// Generate PDF from the cloned DOM in the new tab
 const pdfArray = await html2pdf()
   .from(newTab.document.body)
   .set(options)

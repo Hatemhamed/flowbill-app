@@ -470,6 +470,7 @@ const pdfUrl = URL.createObjectURL(pdfBlob);
 // Redirect the new tab to the PDF
 newTab.location.href = pdfUrl;
 
+document.getElementById("pdfWrapper").style.display = "none";
 
     // ⭐ Hide wrapper again
     wrapper.style.display = "none";

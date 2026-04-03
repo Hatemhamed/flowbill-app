@@ -439,7 +439,10 @@ ${invoice.clientPhone ? `<p style="margin: 2px 0; font-size: 14px;">${invoice.cl
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     };
 
-    await html2pdf().from(printArea).set(options).save();
+   const pdfBlob = await html2pdf().from(printArea).set(options).outputPdf('blob');
+const pdfUrl = URL.createObjectURL(pdfBlob);
+window.open(pdfUrl, "_blank");
+
 
     // ⭐ Hide wrapper again
     wrapper.style.display = "none";

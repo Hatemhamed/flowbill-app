@@ -472,7 +472,6 @@ try {
   newTab.location.href = pdfUrl;
 
 } finally {
-  // Always clean up the UI
   setTimeout(() => {
     document.getElementById("pdfWrapper").style.display = "none";
     document.getElementById("printArea").innerHTML = "";
@@ -480,10 +479,10 @@ try {
   }, 300);
 }
 
- 
+}  // <-- ONLY THIS ONE. REMOVE THE EXTRA ONE.
 
+// ⭐ SAVE INVOICE
 
-  // ⭐ SAVE INVOICE
   async function saveInvoice() {
     const user = auth.currentUser;
     if (!user) {

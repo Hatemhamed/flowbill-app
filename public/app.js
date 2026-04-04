@@ -457,31 +457,31 @@ newTab.document.close();
 const cloned = printArea.cloneNode(true);
 newTab.document.body.appendChild(cloned);
 
-// Generate PDF from the cloned DOM in the new tab
-const pdfArray = await html2pdf()
-  .from(newTab.document.body)
-  .set(options)
-  .outputPdf('arraybuffer');
+try {
+  // Generate PDF from the cloned DOM in the new tab
+  const pdfArray = await html2pdf()
+    .from(newTab.document.body)
+    .set(options)
+    .outputPdf('arraybuffer');
 
-// Convert to Blob
-const pdfBlob = new Blob([pdfArray], { type: "application/pdf" });
-const pdfUrl = URL.createObjectURL(pdfBlob);
+  // Convert to Blob
+  const pdfBlob = new Blob([pdfArray], { type: "application/pdf" });
+  const pdfUrl = URL.createObjectURL(pdfBlob);
 
-// Redirect the new tab to the PDF
-newTab.location.href = pdfUrl;
+  // Redirect the new tab to the PDF
+  newTab.location.href = pdfUrl;
 
-// Hide everything AFTER the browser finishes opening the new tab
-setTimeout(() => {
-  document.getElementById("pdfWrapper").style.display = "none";
-  document.getElementById("printArea").innerHTML = "";
-  document.getElementById("invoiceModal").classList.add("hidden");
-}, 300);
+} finally {
+  // Always clean up the UI
+  setTimeout(() => {
+    document.getElementById("pdfWrapper").style.display = "none";
+    document.getElementById("printArea").innerHTML = "";
+    document.getElementById("invoiceModal").classList.add("hidden");
+  }, 300);
+}
 
+ 
 
-
-    // ⭐ Hide wrapper again
-    wrapper.style.display = "none";
-  }
 
   // ⭐ SAVE INVOICE
   async function saveInvoice() {
